@@ -32,16 +32,23 @@
 #                Default: $PWD/data/fastq/
 #              --manifest-path (optional): path to the manifest file.
 #                The manifest file must cointain 3 tab-separated columns:
-#                Read2filename TAB Read1filename TAB -
+#                Read2filename [TAB] Read1filename [TAB] ID
 #                Read1 contain the cDNA reads, and
 #                Read2 contain the barcode reads (CB+UMI).
+#                ID is an arbitrary identifier name
 #                Default: $PWD/data/fastq/manifest
+#              --run-separated: set to run one STARsolo instance for
+#                every line in the manifest. Outputs one count matrix
+#                for every line.
+#                Default (unset): run one STARsolo instance that
+#                reads all the files in the manifest and outputs 
+#                only one count matrix.
 #Author      : CarlesCN
 #E-mail      : drtlof@gmail.com
 #Example     : run-starsolo.sh --chem v2 --threads 8 --bin-dir ./bin --index-dir ./star/danio_rerio_index --out-dir ./data/starsolo_out/ --read-dir ./data/fastq/ --manifest-path ./data/fastq/manifest
 ###################################################################
 
-usage_msg="USAGE: run-starsolo.sh --chem [v2|v3] [--threads numberOfCores] [--bin-dir /path/to/bin/dir/] [--wl-dir /path/to/whitelist/dir/] [--index-dir /path/to/index/dir/] [--out-dir /path/to/output/dir/] [--read-dir /path/to/read/dir/] [--manifest-path /path/to/manifest/file"]
+usage_msg="USAGE: run-starsolo.sh --chem [v2|v3] [--threads numberOfCores] [--bin-dir /path/to/bin/dir/] [--wl-dir /path/to/whitelist/dir/] [--index-dir /path/to/index/dir/] [--out-dir /path/to/output/dir/] [--read-dir /path/to/read/dir/] [--manifest-path /path/to/manifest/file] [--run-separated]"
 
 # Exit the script if any command exits non-zero status
 set -e
@@ -52,12 +59,14 @@ set -e
 star_path="$PWD/bin/STAR"
 wl_dir="$PWD/star/whitelist"
 index_dir="$PWD/star/genome_index"
-out_dir="$PWD/data/starsolo_out/"
-read_dir="$PWD/data/fastq/"
+out_dir="$PWD/data/starsolo_out"
+read_dir="$PWD/data/fastq"
 manifest_path="$read_dir/manifest"
 # Set the max number of threads
 max_threads=$(nproc --all)
 threads=$max_threads
+# Set the --run-separated flag
+run_separated=FALSE
 
 # Read the arguments
 for arg in "$@"; do
@@ -105,6 +114,11 @@ for arg in "$@"; do
       manifest_path=$2
       shift
       shift
+      ;;
+    --run-separated)
+      run_separated=TRUE
+      shift
+      ;;
   esac
 done
 
@@ -145,6 +159,11 @@ if [[ $threads > $max_threads ]]; then
   threads=$max_threads
 fi
 
+# If manifest has only one line, STARsolo won't run withe the --readFilesManifest option.
+if [[ $(wc -l < $manifest_file) == 1 ]]; then
+  run_separated=TRUE
+fi
+
 
 ## RUN THE STARsolo ALGORITHM
 # Description of arguments passed to STAR:
@@ -178,7 +197,21 @@ case $chem in
     ;;
 esac
 
-# Run the STARsolo algorithm
-$star_path --runThreadN $threads --soloType CB_UMI_Simple $barcode --soloCBwhitelist $whitelist_file --genomeDir $index_dir --outFileNamePrefix $out_dir/ --outSAMtype None --readFilesPrefix $read_dir/ --readFilesManifest $manifest_path
+
+if [[ $run_separated == TRUE ]]; then
+  # Run one instance of the STARsolo algorithm for each line of the manifest
+  while read line; do
+  line_array=($line)
+
+  read2=${line_array[0]}
+  read1=${line_array[1]}
+  out_dir_sep=$out_dir"_${line_array[2]}"
+
+  $star_path --runThreadN $threads --soloType CB_UMI_Simple $barcode --soloCBwhitelist $whitelist_file --genomeDir $index_dir --outFileNamePrefix $out_dir_sep/ --outSAMtype None --readFilesPrefix $read_dir/ --readFilesIn $read2 $read1
+  done < $manifest_path
+else
+  # Run the STARsolo algorithm for the full manifest
+  $star_path --runThreadN $threads --soloType CB_UMI_Simple $barcode --soloCBwhitelist $whitelist_file --genomeDir $index_dir --outFileNamePrefix $out_dir/ --outSAMtype None --readFilesPrefix $read_dir/ --readFilesManifest $manifest_path
+fi
 
 exit 0

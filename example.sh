@@ -40,7 +40,7 @@ $path_to_scripts/sra-to-cellranger-count.sh $IDs
 manifest_file="./data/fastq/manifest"
 rm $manifest_file
 for id in $IDs; do
-  echo -e $id"_3.fastq\t"$id"_2.fastq\t-" >> $manifest_file
+  echo -e $id"_3.fastq\t"$id"_2.fastq\t"$id >> $manifest_file
 done
 
 echo "Manifest file:"
