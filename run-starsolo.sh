@@ -31,7 +31,7 @@
 #                input files are located.
 #                Default: $PWD/data/fastq/
 #              --manifest-path (optional): path to the manifest file.
-#                The manifest file must cointain tab-separated 3 columns:
+#                The manifest file must cointain 3 tab-separated columns:
 #                Read2filename TAB Read1filename TAB -
 #                Read1 contain the cDNA reads, and
 #                Read2 contain the barcode reads (CB+UMI).

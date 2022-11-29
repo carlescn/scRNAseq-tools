@@ -28,7 +28,7 @@ mkdir ./data/starsolo_out/
 $path_to_scripts/starsolo-setup-linux-x86_64.sh
 # Get the fastq-dump executable
 $path_to_scripts/get-fastq-dump.sh
-# Creat the STAR genome indices for Danio_rerio
+# Create the STAR genome indices for Danio_rerio
 $path_to_scripts/starsolo-gen-idx-danio-rerio.sh --index-dir ./star/danio_rerio_index
 
 ## Get the experiment data
