@@ -160,7 +160,7 @@ if [[ $threads > $max_threads ]]; then
 fi
 
 # If manifest has only one line, STARsolo won't run withe the --readFilesManifest option.
-if [[ $(wc -l < $manifest_file) == 1 ]]; then
+if [[ $(wc -l < $manifest_path) == 1 ]]; then
   run_separated=TRUE
 fi
 
