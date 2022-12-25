@@ -1,5 +1,10 @@
 # scRNAseq-tools
 
+[![GPLv3 license](https://img.shields.io/badge/License-GPLv3.0-blue.svg)](https://github.com/carlescn/scRNAseq-tools/blob/main/LICENSE)
+[![Linux](https://img.shields.io/badge/OS-Linux-green.svg?logo=linux)](https://www.linux.org/)
+[![made-with-bash-5.1](https://img.shields.io/badge/Made%20with-Bash%205.1-1f425f.svg?logo=gnubash)](https://www.gnu.org/software/bash/)
+[![STAR-2.7.9a](https://img.shields.io/badge/STAR-2.7.9a-green.svg)](https://github.com/alexdobin/STAR)
+
   This is a set of bash scripts I wrote 
   as a wrapper for [STAR](https://github.com/alexdobin/STAR/)
   to simplify it's setup 
