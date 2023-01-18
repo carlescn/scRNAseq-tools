@@ -37,7 +37,7 @@
 #                Read2 contain the barcode reads (CB+UMI).
 #                ID is an arbitrary identifier name
 #                Default: $PWD/data/fastq/manifest
-#              --run-separated: set to run one STARsolo instance for
+#              --run-individually: set to run one STARsolo instance for
 #                every line in the manifest. Outputs one count matrix
 #                for every line.
 #                Default (unset): run one STARsolo instance that
@@ -48,7 +48,7 @@
 #Example     : run-starsolo.sh --chem v2 --threads 8 --bin-dir ./bin --index-dir ./star/danio_rerio_index --out-dir ./data/starsolo_out/ --read-dir ./data/fastq/ --manifest-path ./data/fastq/manifest
 ###################################################################
 
-usage_msg="USAGE: run-starsolo.sh --chem [v2|v3] [--threads numberOfCores] [--bin-dir /path/to/bin/dir/] [--wl-dir /path/to/whitelist/dir/] [--index-dir /path/to/index/dir/] [--out-dir /path/to/output/dir/] [--read-dir /path/to/read/dir/] [--manifest-path /path/to/manifest/file] [--run-separated]"
+usage_msg="USAGE: run-starsolo.sh --chem [v2|v3] [--threads numberOfCores] [--bin-dir /path/to/bin/dir/] [--wl-dir /path/to/whitelist/dir/] [--index-dir /path/to/index/dir/] [--out-dir /path/to/output/dir/] [--read-dir /path/to/read/dir/] [--manifest-path /path/to/manifest/file] [--run-individually]"
 
 # Exit the script if any command exits non-zero status
 set -e
@@ -65,8 +65,8 @@ manifest_path="$read_dir/manifest"
 # Set the max number of threads
 max_threads=$(nproc --all)
 threads=$max_threads
-# Set the --run-separated flag
-run_separated=FALSE
+# Set the --run-individually flag
+run_individually=FALSE
 
 # Read the arguments
 for arg in "$@"; do
@@ -115,8 +115,8 @@ for arg in "$@"; do
       shift
       shift
       ;;
-    --run-separated)
-      run_separated=TRUE
+    --run-individually)
+      run_individually=TRUE
       shift
       ;;
   esac
@@ -159,9 +159,9 @@ if [[ $threads > $max_threads ]]; then
   threads=$max_threads
 fi
 
-# If manifest has only one line, STARsolo won't run withe the --readFilesManifest option.
+# STARsolo won't run with the --readFilesManifest option if it has only one line
 if [[ $(wc -l < $manifest_path) == 1 ]]; then
-  run_separated=TRUE
+  run_individually=TRUE
 fi
 
 
@@ -198,7 +198,7 @@ case $chem in
 esac
 
 
-if [[ $run_separated == TRUE ]]; then
+if [[ $run_individually == TRUE ]]; then
   # Run one instance of the STARsolo algorithm for each line of the manifest
   while read line; do
   line_array=($line)

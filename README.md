@@ -168,7 +168,7 @@ starsolo-gen-idx-danio-rerio.sh --threads 8 --bindir ./bin --genomedir ./star/EN
   - Read2 contain the barcode reads (CB+UMI).
   - ID is an arbitrary identifier name
   *Default: $PWD/data/fastq/manifest*
-- **`--run-separated`:** 
+- **`--run-individually`:** 
   set to run one STARsolo instance for every line in the manifest.
   This outputs one count matrix for every line.
   Let it unset to run one STARsolo instance
