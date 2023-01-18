@@ -37,7 +37,7 @@ if [[ -f $bin_dir ]]; then
   echo "ERROR: $bin_dir already exists but is a file (should be a directory). Check the --bindir argument."
   exit 1
 elif [[ ! -d $bin_dir ]]; then
-  mkdir $bin_dir
+  mkdir -p $bin_dir
 fi
 
 # Get the SRA-toolkit and symlink to the fastq-dump executable

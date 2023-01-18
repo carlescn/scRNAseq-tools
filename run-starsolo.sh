@@ -150,7 +150,7 @@ if [[ -f $out_dir ]]; then
   echo "ERROR: $out_dir already exists but is a file (should be a directory). Check the --out-dir argument."
   exit 1
 elif [[ ! -d $out_dir ]]; then
-  mkdir $out_dir
+  mkdir -p $out_dir
 fi
 
 # Check the number of threads against the machine max

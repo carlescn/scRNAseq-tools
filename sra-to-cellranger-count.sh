@@ -65,7 +65,7 @@ if [[ -f $out_dir ]]; then
   echo "ERROR: $out_dir already exists but is a file (should be a directory). Check the --outd-ir argument."
   exit 1
 elif [[ ! -d $out_dir ]]; then
-  mkdir $out_dir
+  mkdir -p $out_dir
 fi
 
 # Check that the files list is not empty

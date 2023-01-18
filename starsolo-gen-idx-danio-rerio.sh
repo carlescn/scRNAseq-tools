@@ -91,14 +91,14 @@ if [[ -f $genome_dir ]]; then
   echo "ERROR: $genome_dir already exists but is a file (should be a directory). Check the --genome-dir argument."
   exit 1
 elif [[ ! -d $genome_dir ]]; then
-  mkdir $genome_dir
+  mkdir -p $genome_dir
 fi
 
 if [[ -f $index_dir ]]; then
   echo "ERROR: $index_dir already exists but is a file (should be a directory). Check the --index-dir argument."
   exit 1
 elif [[ ! -d $index_dir ]]; then
-  mkdir $index_dir
+  mkdir -p $index_dir
 fi
 
 # Check the number of threads against the machine max
