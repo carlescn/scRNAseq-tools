@@ -54,21 +54,26 @@ if [[ -f $bin_dir ]]; then
   echo "ERROR: $bin_dir already exists but is a file (should be a directory). Check the --bin-dir argument."
   exit 1
 elif [[ ! -d $bin_dir ]]; then
-  mkdir $bin_dir
+  mkdir -p $bin_dir
 fi
 
 if [[ -f $wl_dir ]]; then
   echo "ERROR: $wl_dir already exists but is a file (should be a directory). Check the --wl-dir argument."
   exit 1
 elif [[ ! -d $wl_dir ]]; then
-  mkdir $wl_dir
+  mkdir -p $wl_dir
 fi
 
 
 ## DOWNLOAD THE NECESSARY FILES
 # Download the STAR executable
-star_url="https://github.com/alexdobin/STAR/raw/master/bin/Linux_x86_64/STAR"
-wget --output-document $bin_dir/STAR $star_url
+star_url="https://github.com/alexdobin/STAR/releases/download/2.7.10b/STAR_2.7.10b.zip"
+star_zip="STAR_2.7.10b.zip"
+star_folder="STAR_2.7.10b/Linux_x86_64"
+wget --output-document=./bin/$star_zip $star_url
+unzip $bin_dir/$star_zip -d $bin_dir
+rm $bin_dir/$star_zip
+ln -s $bin_dir/$star_folder/STAR $bin_dir/STAR
 chmod +x $bin_dir/STAR
 
 # Download the 10xGenomics whitelists
