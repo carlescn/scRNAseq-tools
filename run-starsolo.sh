@@ -23,7 +23,7 @@
 #                Default: $PWD/star/whitelist
 #              --index-dir (optional): path to directory where the
 #                generated indices should be stored.
-#                Default: $PWD/star/genome_index
+#                Default: $PWD/star/danio_rerio_index
 #              --out-dir (optional): path to directory where the
 #                otput files for STARsolo should be stored.
 #                Default: $PWD/data/starsolo_out/
@@ -58,7 +58,7 @@ set -e
 # Set the default paths (if arguments ar not provided)
 star_path="$PWD/bin/STAR"
 wl_dir="$PWD/star/whitelist"
-index_dir="$PWD/star/genome_index"
+index_dir="$PWD/star/danio_rerio_index"
 out_dir="$PWD/data/starsolo_out"
 read_dir="$PWD/data/fastq"
 manifest_path="$read_dir/manifest"

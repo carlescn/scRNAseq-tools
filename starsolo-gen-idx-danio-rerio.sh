@@ -24,7 +24,7 @@
 #                Default: $PWD/star/ENSEMBL
 #              --index-dir (optional): path to directory where the
 #                generated indices should be stored.
-#                Default: $PWD/star/danio_rerio_idnex
+#                Default: $PWD/star/danio_rerio_index
 #Author      : CarlesCN
 #E-mail      : drtlof@gmail.com
 #Example     : starsolo-gen-idx-danio-rerio.sh --threads 8 --bindir ./bin --genomedir ./star/ENSEMBL --indexdir ./star/danio_rerio_index
@@ -43,7 +43,7 @@ set -e
 # Set the default paths (if arguments are not provided)
 star_path="$PWD/bin/STAR"
 genome_dir="$PWD/star/ENSEMBL"
-index_dir="$PWD/star/genome_index"
+index_dir="$PWD/star/danio_rerio_index"
 # Set the max number of threads
 max_threads=$(nproc --all)
 threads=$max_threads

@@ -14,13 +14,11 @@ path_to_scripts="./bin"
 ## Prepare the folder structure
 # This script will use the default paths for the rest of the scripts, when possible
 #mkdir ./bin  # It is assumed this directory already exist and cointains the script files
-mkdir ./star
-mkdir ./star/ENSEMBL
-mkdir ./star/danio_rerio_idx
-mkdir ./star/whitelist
-mkdir ./data
-mkdir ./data/fastq
-mkdir ./data/starsolo_out/
+mkdir -p ./star/ENSEMBL
+mkdir -p ./star/danio_rerio_index
+mkdir -p ./star/whitelist
+mkdir -p ./data/fastq
+mkdir -p ./data/starsolo_out/
 
 
 ## Get the necessary tools and create the STAR genome indices (RUN ONLY THE FIRST TIME!)
@@ -29,7 +27,7 @@ $path_to_scripts/starsolo-setup-linux-x86_64.sh
 # Get the fastq-dump executable
 $path_to_scripts/get-fastq-dump.sh
 # Create the STAR genome indices for Danio_rerio
-$path_to_scripts/starsolo-gen-idx-danio-rerio.sh --index-dir ./star/danio_rerio_index
+$path_to_scripts/starsolo-gen-idx-danio-rerio.sh
 
 ## Get the experiment data
 IDs="SRR13839953 SRR13839961 SRR13839973"
@@ -46,5 +44,5 @@ done
 echo "Manifest file:"
 cat $manifest_file
 
-$path_to_scripts/run-starsolo.sh --chem v2 --index-dir ./star/danio_rerio_index
+$path_to_scripts/run-starsolo.sh --chem v2
 
