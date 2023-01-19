@@ -6,7 +6,7 @@
 [![STAR-2.7.9a](https://img.shields.io/badge/STAR-2.7.10b-darkgreen.svg)](https://github.com/alexdobin/STAR)
 
   This is a set of bash scripts I wrote 
-  as a wrapper for [STAR](https://github.com/alexdobin/STAR/)
+  as a wrapper for [STARsolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md)
   to simplify it's setup 
   and for calling it with a set of pre-defined parameters.
   
