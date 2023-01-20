@@ -5,6 +5,8 @@
 #Description : Runs the STARsolo algorithm on the provided FASTQ files.
 #              It sets the the correct parameters for 10xGenomics
 #              chemistry v2 or v3.
+#              If the files are in the format FASTQ.GZ, it automatically
+#              passes the correct option to STAR.
 #              It needs a generated STAR genome index. It can be prepared
 #              by running the script starsolo-gen-idcx-danio-rerio.sh
 #              provided in this repository (or a modified one).
@@ -175,11 +177,13 @@ fi
 # --soloUMIstart 17: start position for the UMI part of the barcode (valid for chemistry v2 and v3).
 # --soloUMIlen [10|12]: lenght of the the UMI part of the barcode (10 for v2, 12 for v3).
 # --soloCBwhitelist [FILE]: file containing the 10xGenmoics barcode whitelist for the corresponding chemistry.
+# --soloBarcodeReadLength 0: don't check the length of read2. Useful when processing raw FASTQ files containing the adapters (not only the CB+UMI)
 # --genomeDir [DIR]: directory containing the genome indices
 # --outFileNamePrefix [STR]: string that will be prefixed to the output files. In this script, is used to set an output directory.
 # --outSAMtype None: don't output a SAM file containing the aligned reads. We only want the cell-feature count matrix.
 # --readFilesPrefix [STR]: string that is prefixed to the input files. In this script, is used to set an input directory.
 # --readFilesManifest [FILE]: file containing the filenames of the FASTQ files to read.
+# --readFilesCommand zcat: must use when FASTQ files are GZ compressed.
 
 # Set the correct arguments for chemistry v2 or v3
 case $chem in
@@ -197,6 +201,18 @@ case $chem in
     ;;
 esac
 
+# Check if first file in manifest is GZ compressed, and set the appropriate option
+read first_line < $manifest_path
+first_file=($first_line)
+if [[ $first_file == *.fastq.gz ]] || [[ $first_file == *.FASTQ.GZ ]]; then
+  unzip_file="--readFilesCommand zcat"
+else
+  unzip_file=""
+fi
+
+common_options="--runThreadN $threads --soloType CB_UMI_Simple $barcode --soloCBwhitelist $whitelist_file --soloBarcodeReadLength 0 --genomeDir $index_dir --outSAMtype None --readFilesPrefix $read_dir/ $unzip_file"
+
+echo $common_options
 
 if [[ $run_individually == TRUE ]]; then
   # Run one instance of the STARsolo algorithm for each line of the manifest
@@ -207,11 +223,11 @@ if [[ $run_individually == TRUE ]]; then
   read1=${line_array[1]}
   out_dir_sep=$out_dir"_${line_array[2]}"
 
-  $star_path --runThreadN $threads --soloType CB_UMI_Simple $barcode --soloCBwhitelist $whitelist_file --genomeDir $index_dir --outFileNamePrefix $out_dir_sep/ --outSAMtype None --readFilesPrefix $read_dir/ --readFilesIn $read2 $read1
+  $star_path $common_options --outFileNamePrefix $out_dir_sep/  --readFilesIn $read2 $read1
   done < $manifest_path
 else
   # Run the STARsolo algorithm for the full manifest
-  $star_path --runThreadN $threads --soloType CB_UMI_Simple $barcode --soloCBwhitelist $whitelist_file --genomeDir $index_dir --outFileNamePrefix $out_dir/ --outSAMtype None --readFilesPrefix $read_dir/ --readFilesManifest $manifest_path
+  $star_path $common_options --outFileNamePrefix $out_dir/  --readFilesManifest $manifest_path
 fi
 
 exit 0
