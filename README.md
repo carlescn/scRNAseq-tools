@@ -124,7 +124,10 @@ starsolo-gen-idx-danio-rerio.sh --threads 8 --bindir ./bin --genomedir ./star/EN
 
   Runs the STARsolo algorithm on the provided FASTQ files.
   It sets the the correct parameters for 10xGenomics chemistry v2 or v3.
-
+  If the files are gzipped (*.fastq.gz or *.FASTQ.GZ),
+  it automatically passes the correct option to STAR.
+  Works with both trimmed and untrimmed (with the adapter sequences) files.
+  
 
 #### Dependencies:
 
