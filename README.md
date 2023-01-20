@@ -166,9 +166,9 @@ starsolo-gen-idx-danio-rerio.sh --threads 8 --bindir ./bin --genomedir ./star/EN
   path to the manifest file.
   The manifest file must cointain 3 tab-separated columns:
   
-  Read2filename [TAB] Read1filename [TAB] ID
-  - Read1 contain the cDNA reads, and
+  Read1filename [TAB] Read2filename [TAB] ID
   - Read2 contain the barcode reads (CB+UMI).
+  - Read1 contain the cDNA reads, and
   - ID is an arbitrary identifier name
   *Default: $PWD/data/fastq/manifest*
 - **`--run-individually`:** 

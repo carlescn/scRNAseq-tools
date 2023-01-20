@@ -34,10 +34,10 @@
 #                Default: $PWD/data/fastq/
 #              --manifest-path (optional): path to the manifest file.
 #                The manifest file must cointain 3 tab-separated columns:
-#                Read2filename [TAB] Read1filename [TAB] ID
-#                Read1 contain the cDNA reads, and
-#                Read2 contain the barcode reads (CB+UMI).
-#                ID is an arbitrary identifier name
+#                Read1filename [TAB] Read2filename [TAB] ID
+#                Read1 contain the barcode reads (CB+UMI),
+#                Read2 contain the cDNA reads, and
+#                ID is an arbitrary identifier name.
 #                Default: $PWD/data/fastq/manifest
 #              --run-individually: set to run one STARsolo instance for
 #                every line in the manifest. Outputs one count matrix
@@ -177,7 +177,7 @@ fi
 # --soloUMIstart 17: start position for the UMI part of the barcode (valid for chemistry v2 and v3).
 # --soloUMIlen [10|12]: lenght of the the UMI part of the barcode (10 for v2, 12 for v3).
 # --soloCBwhitelist [FILE]: file containing the 10xGenmoics barcode whitelist for the corresponding chemistry.
-# --soloBarcodeReadLength 0: don't check the length of read2. Useful when processing raw FASTQ files containing the adapters (not only the CB+UMI)
+# --soloBarcodeReadLength 0: don't check the length of read1. Useful when processing raw FASTQ files containing the adapters (not only the CB+UMI)
 # --genomeDir [DIR]: directory containing the genome indices
 # --outFileNamePrefix [STR]: string that will be prefixed to the output files. In this script, is used to set an output directory.
 # --outSAMtype None: don't output a SAM file containing the aligned reads. We only want the cell-feature count matrix.
@@ -219,11 +219,11 @@ if [[ $run_individually == TRUE ]]; then
   while read line; do
   line_array=($line)
 
-  read2=${line_array[0]}
-  read1=${line_array[1]}
+  read1=${line_array[0]}
+  read2=${line_array[1]}
   out_dir_sep=$out_dir"_${line_array[2]}"
 
-  $star_path $common_options --outFileNamePrefix $out_dir_sep/  --readFilesIn $read2 $read1
+  $star_path $common_options --outFileNamePrefix $out_dir_sep/  --readFilesIn $read1 $read2
   done < $manifest_path
 else
   # Run the STARsolo algorithm for the full manifest
