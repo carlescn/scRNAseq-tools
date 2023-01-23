@@ -4,7 +4,8 @@
 #Script Name : sra-to-cellranger-count.sh
 #Description : Downloads data from the SRA ID(s) provided and extracts
 #              the original FASTQ files from cellranger count. 
-#              Only read 2 (barcode) and read 3 (cDNA) are kept.
+#              Only read 2 (CB+UMI), renamed to *_barcode.fastq
+#              and read 3 (cDNA), renamed to *_cdna.fastq, are kept.
 #Dependencies: fastq-dump executable from the SRA-toolkit. Can be
 #              obtained running the get-fastq-dump.sh script provided
 #              in this repository.
