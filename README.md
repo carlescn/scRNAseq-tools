@@ -165,11 +165,11 @@ starsolo-gen-idx-danio-rerio.sh --threads 8 --bindir ./bin --genomedir ./star/EN
 - **`--manifest-path` (optional):** 
   path to the manifest file.
   The manifest file must cointain 3 tab-separated columns:
-  
-  Read1filename [TAB] Read2filename [TAB] ID
-  - Read2 contain the barcode reads (CB+UMI).
-  - Read1 contain the cDNA reads, and
-  - ID is an arbitrary identifier name
+  cDNA.fastq [TAB] BarCode.fastq [TAB] ID
+  where:
+  - cDNA.fastq contains the cDNA reads,
+  - BarCode.fastq contains the barcode reads (CB+UMI), and
+  - ID is an arbitrary identifier name.
   *Default: $PWD/data/fastq/manifest*
 - **`--run-individually`:** 
   set to run one STARsolo instance for every line in the manifest.
@@ -214,7 +214,8 @@ get-fastq-dump.sh --bindir ./bin
 
   Downloads data from the SRA ID(s) provided
   and extracts the original FASTQ files from cellranger count.
-  Only read 2 (CB+UMI) and read 3 (cDNA) are kept.
+  Only read 2 (CB+UMI), renamed to *_barcode.fastq
+  and read 3 (cDNA), renamed to *_cdna.fastq, are kept.
   Read 1 (GEM ID) is discarted.
 
 #### Dependencies:
