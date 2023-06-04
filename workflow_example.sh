@@ -15,6 +15,9 @@ set -euo pipefail
 # This script assumes they have been already downloaded and stored in the following directory:
 readonly path_to_scripts="./bin"
 
+readonly path_to_sra="$path_to_scripts"/sra
+readonly path_to_starsolo="$path_to_scripts"/starsolo
+
 
 # Prepare the folder structure
 # This script will use the default paths for the rest of the scripts, when possible
@@ -28,15 +31,15 @@ mkdir -p ./data/starsolo_out/
 
 # Get the necessary tools and create the STAR genome indices (ONLY NECESSARY THE FIRST TIME!)
 # Get the STAR executable
-"$path_to_scripts"/starsolo-setup-linux-x86_64.sh
+"$path_to_starsolo"/starsolo-setup-linux-x86_64.sh
 # Get the fastq-dump executable
-"$path_to_scripts"/get-fastq-dump.sh
+"$path_to_sra"/get-fastq-dump.sh
 # Create the STAR genome indices for Danio_rerio
-"$path_to_scripts"/starsolo-gen-idx-danio-rerio.sh
+"$path_to_starsolo"/starsolo-gen-idx-danio-rerio.sh
 
 # Get the experiment data
 IDs="SRR13839953 SRR13839961 SRR13839973"
-"$path_to_scripts"/sra-to-cellranger-count.sh "$IDs"
+"$path_to_sra"/sra-to-cellranger-count.sh "$IDs"
 
 # Create the manifest file
 readonly manifest_file="./data/fastq/manifest"
@@ -49,4 +52,4 @@ echo "Manifest file:"
 cat $manifest_file
 
 # Execute the STARsolo algorithm: get the cell-feature count matrix.
-"$path_to_scripts"/run-starsolo.sh --chem v2
+"$path_to_starsolo"/run-starsolo.sh --chem v2
