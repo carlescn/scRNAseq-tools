@@ -51,7 +51,7 @@ threads=$(nproc --all) # set max threads for this machine
 # threads=4            # or set manually
 
 ## Wether to run each file individually or all files in a single run
-run_individually=false
+run_individually=true
 
 
 # SET THE PARAMETERS FOR STARsolo
@@ -59,37 +59,37 @@ run_individually=false
 starsolo_params=()
 
 ### Generic
-starsolo_params+=("--runThreadN $threads")
-starsolo_params+=("--soloType   CB_UMI_Simple")
+starsolo_params+=("--runThreadN" "$threads")
+starsolo_params+=("--soloType"   "CB_UMI_Simple")
 
 ### Chemistry 3' v3
-starsolo_params+=("--soloBarcodeReadLength 0")
-starsolo_params+=("--soloCBstart     1")
-starsolo_params+=("--soloCBlen       16")
-starsolo_params+=("--soloUMIstart    17")
-starsolo_params+=("--soloUMIlen      12")
-starsolo_params+=("--soloStrand      Forward")
-starsolo_params+=("--soloCBwhitelist $wlist_dir/3M-february-2018.txt")
+starsolo_params+=("--soloBarcodeReadLength" "0")
+starsolo_params+=("--soloCBstart"     "1")
+starsolo_params+=("--soloCBlen"       "16")
+starsolo_params+=("--soloUMIstart"    "17")
+starsolo_params+=("--soloUMIlen"      "12")
+starsolo_params+=("--soloStrand"      "Forward")
+starsolo_params+=("--soloCBwhitelist" "$wlist_dir/3M-february-2018.txt")
 
 ### Reproduce CellRanger output
 soloFeatures="Gene GeneFull"
-starsolo_params+=("--soloFeatures      $soloFeatures")
-starsolo_params+=("--soloUMIdedup      1MM_CR")
-starsolo_params+=("--soloUMIfiltering  MultiGeneUMI_CR")
-starsolo_params+=("--soloCBmatchWLtype 1MM_multi_Nbase_pseudocounts")
-starsolo_params+=("--clipAdapterType   CellRanger4")
-starsolo_params+=("--outFilterScoreMin 30")
-starsolo_params+=("--soloMultiMappers  EM")
-starsolo_params+=("--soloCellFilter    EmptyDrops_CR")
+starsolo_params+=("--soloFeatures"      "$soloFeatures")
+starsolo_params+=("--soloUMIdedup"      "1MM_CR")
+starsolo_params+=("--soloUMIfiltering"  "MultiGeneUMI_CR")
+starsolo_params+=("--soloCBmatchWLtype" "1MM_multi_Nbase_pseudocounts")
+starsolo_params+=("--clipAdapterType"   "CellRanger4")
+starsolo_params+=("--outFilterScoreMin" "30")
+starsolo_params+=("--soloMultiMappers"  "EM")
+starsolo_params+=("--soloCellFilter"    "EmptyDrops_CR")
 #### Note:
 #### Option EmptyDrops_CR can be followed by 10 numeric parameters (The harcoded values below are from CellRanger):
 #### ExpectedCells  maxPercentile  maxMinRatio  indMin  indMax  umiMin  umiMinFracMedian  candMaxN  FDR   simN
 #### 3000           0.99           10           45000   90000   500     0.01              20000     0.01  10000
 
 ### Input / output
-starsolo_params+=("--genomeDir       $genome_dir")
-starsolo_params+=("--outSAMtype      None")
-starsolo_params+=("--readFilesPrefix $input_dir/")
+starsolo_params+=("--genomeDir"       "$genome_dir")
+starsolo_params+=("--outSAMtype"      "None")
+starsolo_params+=("--readFilesPrefix" "$input_dir/")
 
 ### Set output subdirs (for GZ compressing the output files)
 output_subdirs=()
@@ -135,14 +135,18 @@ if $run_individually; then
         ## Read each line, split string into array using TAB as separator
         IFS=$'\t' read -r -a line_array <<< "$line_string"
 
+        read_cDNA="${line_array[0]}"
+        read_BC="${line_array[1]}"
+        read_id="${line_array[2]}"
+
         ## Set input and output params
-        output_dir_ind="$output_dir\_${line_array[2]}"
+        output_dir_ind="$output_dir/$read_id"
         starsolo_params+=("--outFileNamePrefix $output_dir_ind/")
-        starsolo_params+=("--readFilesIn ${line_array[0]} ${line_array[1]}")
+        starsolo_params+=("--readFilesIn $read_cDNA $read_BC")
 
         ## Run STARsolo
         $star_path "${starsolo_params[@]}"
-        
+
         ## GZ compress output files (same as CellRanger)
         for subdir in "${output_subdirs[@]}"; do
             gzip "$output_dir_ind/$subdir/*"
