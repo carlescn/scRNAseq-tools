@@ -94,8 +94,8 @@ starsolo_params+=("--readFilesPrefix" "$input_dir/")
 ### Set output subdirs (for GZ compressing the output files)
 output_subdirs=()
 for subdir in $soloFeatures; do
-    output_subdirs+=("/Solo.out/$subdir/filtered")
-    output_subdirs+=("/Solo.out/$subdir/raw")
+    output_subdirs+=("Solo.out/$subdir/filtered")
+    output_subdirs+=("Solo.out/$subdir/raw")
 done
 
 
@@ -149,7 +149,7 @@ if $run_individually; then
 
         ## GZ compress output files (same as CellRanger)
         for subdir in "${output_subdirs[@]}"; do
-            gzip "$output_dir_ind/$subdir/*"
+            gzip "$output_dir_ind/$subdir"/*
         done
     done < "$manifest_path"
 
@@ -164,7 +164,7 @@ else
 
     ## GZ compress output files (same as CellRanger)
     for subdir in "${output_subdirs[@]}"; do
-        gzip "$output_dir/$subdir/*"
+        gzip "$output_dir/$subdir"/*
     done
 fi
 
